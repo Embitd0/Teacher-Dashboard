@@ -1,0 +1,266 @@
+﻿@model TeacherModel
+@{
+    Layout = null; 
+    ViewData["Title"] = "Student Profile";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Teacher's Sanctuary</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold-border: #f9e27d;
+            --blue-outline: #3a7a98;
+            --panel-bg: rgba(13, 33, 53, 0.9);
+            --text-cyan: #5ce1e6;
+            --text-white: #e0f7fa;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Press Start 2P', cursive;
+            background: #05161d;
+            color: var(--text-white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header-container {
+            border: 6px solid var(--gold-border);
+            background-color: rgba(10, 25, 41, 0.95);
+            padding: 15px 60px;
+            border-radius: 50px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        }
+
+            .header-container h1 {
+                color: var(--text-cyan);
+                font-size: 24px;
+                margin: 0;
+                text-align: center;
+            }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 95%;
+            max-width: 1100px;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 3px solid var(--blue-outline);
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .panel-title {
+            font-size: 12px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .info-row {
+            font-size: 10px;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+
+        .value {
+            color: var(--text-cyan);
+        }
+
+        .task-item {
+            font-size: 9px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            color: #888;
+            font-size: 8px;
+            margin-bottom: 5px;
+        }
+
+        .retry-text {
+            color: #ff5555;
+            margin-top: 5px;
+        }
+
+        .badge-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .badge-slot {
+            width: 60px;
+            height: 60px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .badge-img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .footer-nav {
+            width: 95%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .back-btn {
+            background-color: #2a5a70;
+            border: 3px solid var(--gold-border);
+            color: white;
+            padding: 12px 20px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+            .back-btn:hover {
+                background-color: #3a7a98;
+                transform: scale(1.05);
+            }
+
+        @@media (max-width: 800px) {
+            .profile-grid
+
+        {
+            grid-template-columns: 1fr;
+        }
+
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <h1 id="page-title">STUDENT PROFILE</h1>
+    </div>
+
+    <div class="profile-grid">
+        <div class="panel">
+            <div class="panel-title">CHARACTER INFORMATION</div>
+            <div class="info-row">STUDENT NAME: <span id="student-name" class="value">Loading...</span></div>
+            <div class="info-row">USERNAME: <span id="student-username" class="value">---</span></div>
+            <div class="info-row">LRN: <span id="student-lrn" class="value">---</span></div>
+            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.2); margin:15px 0;">
+            <div class="info-row">Current Level: <span id="student-level" style="float:right">0</span></div>
+            <div class="info-row">Total Completed Tasks: <span id="student-completed-count" style="float:right">0</span></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">CURRENT ONGOING TASKS</div>
+            <div id="ongoing-tasks-container"></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">REWARDS AND BADGES</div>
+            <div id="badge-container" class="badge-container"></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">COMPLETED TASKS</div>
+            <div id="completed-tasks-container"></div>
+        </div>
+    </div>
+
+    <div class="footer-nav">
+        <a asp-controller="Teacher" asp-action="StudentProgress" class="back-btn">BACK TO CLASS VIEW</a>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const studentId = params.get('id');
+
+        async function fetchStudentData(id) {
+                    // update niyo toh para sa backend data
+            const mockData = {
+                name: "Jose Rizal",
+                username: "rizalConqueror",
+                lrn: "1234567890",
+                level: 1,
+                completedCount: 2,
+                ongoing: [
+                    { title: "LEVEL 1 | TASK 3: COLLOIDS", attempt: "3rd", time: "15:29", progress: "54%", retries: 2 },
+                    { title: "LEVEL 1 | TASK 4: COLLOIDS PT. 2", attempt: "1st", time: "--:--", progress: "0%", retries: 3 }
+                ],
+                completed: [
+                    { title: "LEVEL 1 | TASK 1: SOLUTIONS", retries: 3 },
+                    { title: "LEVEL 1 | TASK 2: SUSPENSIONS", retries: 1 }
+                ],
+                badges: ["/images/badge1.png", "/images/badge2.png", "/images/badge3.png", "/images/badge4.png"]
+            };
+
+            updateUI(mockData);
+        }
+
+        function updateUI(data) {
+            document.getElementById('student-name').innerText = data.name;
+            document.getElementById('student-username').innerText = data.username;
+            document.getElementById('student-lrn').innerText = data.lrn;
+            document.getElementById('student-level').innerText = data.level;
+            document.getElementById('student-completed-count').innerText = data.completedCount;
+
+            const ongoingCont = document.getElementById('ongoing-tasks-container');
+            ongoingCont.innerHTML = data.ongoing.map(t => `
+                <div class="task-item">
+                    <div class="task-header"><span>${t.attempt} Attempt</span><span>${t.time}</span></div>
+                    <div>${t.title} <span style="float:right">${t.progress}</span></div>
+                    <div class="retry-text">NUM. OF RETRIES: ${t.retries}</div>
+                </div>
+            `).join('');
+
+            const completedCont = document.getElementById('completed-tasks-container');
+            completedCont.innerHTML = data.completed.map(t => `
+                <div class="task-item">
+                    <div>${t.title}</div>
+                    <div class="retry-text">NUM. OF RETRIES: ${t.retries}</div>
+                </div>
+            `).join('');
+
+            const badgeCont = document.getElementById('badge-container');
+            badgeCont.innerHTML = data.badges.map(b => `
+                <div class="badge-slot"><img src="${b}" class="badge-img" alt="Badge"></div>
+            `).join('');
+        }
+
+        if(studentId) {
+            fetchStudentData(studentId);
+        } else {
+            document.getElementById('student-name').innerText = "No Student Selected";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+﻿@model TeacherModel
+@{
+    Layout = null; // naka disable yung default layout para full control sa design ng page
+                   // pero kung gusto mo ng consistent header/footer, pwede mo pa rin i-enable yung layout at ilagay yung content sa loob ng sections
+    ViewData["Title"] = "Teacher's Sanctuary";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --gold-bg: #d4af37;
+            --gold-border: #f9e27d;
+            --blue-bg: #2a5a70;
+            --text-white: #e0f7fa;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Press Start 2P', cursive;
+            background-color: #05161d;
+            overflow: hidden;
+        }
+
+        .sanctuary-container {
+            height: 100vh;
+            background: url('/images/teacher_sanctuary_bg.jpg') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-title {
+            border: 6px solid var(--gold-border);
+            background-color: rgba(10, 25, 41, 0.9);
+            padding: 15px 50px;
+            border-radius: 40px;
+            margin-bottom: 50px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+            .main-title h1 {
+                color: #5ce1e6;
+                margin: 0;
+                font-size: 1.5rem;
+                text-shadow: 2px 2px #000;
+            }
+
+        .menu-grid {
+            display: flex;
+            gap: 30px;
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card {
+            width: 170px;
+            height: 190px;
+            border-radius: 15px;
+            border: 3px solid rgba(255,255,255,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 15px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+            .card:hover {
+                transform: scale(1.05);
+                border-color: var(--gold-border);
+            }
+
+            .card.gold {
+                background-color: var(--gold-bg);
+            }
+
+            .card.blue {
+                background-color: var(--blue-bg);
+            }
+
+        .icon-circle {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            border: 4px solid var(--gold-border);
+            background: radial-gradient(circle, #0a2e38, #000);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card p {
+            color: var(--text-white);
+            font-size: 0.6rem;
+            line-height: 1.4;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="sanctuary-container">
+        <header class="main-title">
+            <h1>TEACHER'S SANCTUARY</h1>
+        </header>
+
+        <div class="menu-grid">
+            @* eto yung pag route sa  TeacherController papunta sa StudentProgress Action *@
+            <a asp-controller="Teacher" asp-action="StudentProgress" class="card-link">
+                <div class="card gold">
+                    <div class="icon-circle">
+                        <img src="~/images/progress-icon.png" alt="Progress" width="40">
+                    </div>
+                    <p>VIEW CLASS PROGRESS</p>
+                </div>
+            </a>
+
+            <a asp-controller="Teacher" asp-action="Index" class="card-link">
+                <div class="card blue">
+                    <div class="icon-circle">
+                        <img src="~/images/logout-icon.png" alt="Log Out" width="40">
+                    </div>
+                    <p>LOG OUT</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

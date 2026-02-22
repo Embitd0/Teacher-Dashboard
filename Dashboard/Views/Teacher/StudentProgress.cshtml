@@ -1,0 +1,182 @@
+﻿@model TeacherModel
+@{
+    Layout = null; // Keeping the custom game UI look
+    ViewData["Title"] = "Student Progress";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --gold-primary: #d4af37;
+            --gold-border: #f9e27d;
+            --bg-dark-blue: #2a5a70;
+            --table-overlay: rgba(13, 33, 53, 0.85);
+            --text-cyan: #5ce1e6;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Press Start 2P', cursive;
+            background-color: #05161d;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-container {
+            margin-top: 40px;
+            border: 6px solid var(--gold-border);
+            background-color: rgba(10, 25, 41, 0.9);
+            padding: 15px 50px;
+            border-radius: 40px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+            .header-container h1 {
+                color: var(--text-cyan);
+                font-size: 24px;
+                margin: 0;
+                text-shadow: 2px 2px #000;
+            }
+
+        .content-box {
+            margin-top: 30px;
+            width: 85%;
+            max-width: 900px;
+            background-color: var(--table-overlay);
+            border: 3px solid var(--gold-primary);
+            border-radius: 15px;
+            padding: 30px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+            .content-box h2 {
+                text-align: center;
+                font-size: 16px;
+                margin-bottom: 30px;
+                letter-spacing: 2px;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        th {
+            text-align: left;
+            padding-bottom: 15px;
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        td {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .view-btn {
+            background: none;
+            border: none;
+            color: white;
+            text-decoration: underline;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            padding: 5px;
+        }
+
+            .view-btn:hover {
+                color: var(--gold-border);
+            }
+
+        .logout-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 40px;
+            background-color: #2a5a70;
+            border: 3px solid var(--gold-border);
+            color: white;
+            padding: 10px 15px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <h1>TEACHER'S SANCTUARY</h1>
+    </div>
+
+    <div class="content-box">
+        <h2>STUDENT PROGRESS</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>NAME</th>
+                    <th>COMPL. TASKS</th>
+                    <th>ONG. TASKS</th>
+                    <th>LEVEL</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+            <tbody id="student-table-body">
+            </tbody>
+        </table>
+    </div>
+
+    <a asp-controller="Teacher" asp-action="Index" class="logout-btn">LOG OUT</a>
+
+    <script>
+        // example data na gagawin ng backend. PALITAN NIYO TOH
+        const students = [
+            { id: 101, name: "RIZAL, J.", completed: 2, ongoing: 2, level: 1 },
+            { id: 102, name: "BONIFACIO, A.", completed: 1, ongoing: 2, level: 1 },
+            { id: 103, name: "TALIS, J.", completed: 4, ongoing: 1, level: 3 },
+            { id: 104, name: "MARS, B.", completed: 1, ongoing: 1, level: 1 },
+            { id: 105, name: "BARNEY, B.", completed: 0, ongoing: 2, level: 1 }
+        ];
+
+        function renderTable(data) {
+            const tableBody = document.getElementById('student-table-body');
+            tableBody.innerHTML = '';
+
+            data.forEach(student => {
+                const row = `
+                    <tr>
+                        <td>${student.name}</td>
+                        <td>${student.completed}</td>
+                        <td>${student.ongoing}</td>
+                        <td>${student.level}</td>
+                        <td>
+                            <button class="view-btn" onclick="viewStudent(${student.id})">VIEW</button>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        function viewStudent(id) {
+            window.location.href = `/Teacher/ViewStudent?id=${id}`;
+        }
+
+        renderTable(students);
+    </script>
+</body>
+</html>
