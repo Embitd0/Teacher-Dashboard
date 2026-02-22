@@ -1,8 +1,11 @@
-﻿@model TeacherModel
+﻿@* Views/Teacher/Home.cshtml *@
+@* Isang linya lang ang binago mula sa original mo:
+   ang LOG OUT card — nagtuturo na sa Login/Logout para ma-clear ang session *@
+
+@model Dashboard.Models.TeacherModel
 @{
-    Layout = null; // naka disable yung default layout para full control sa design ng page
-                   // pero kung gusto mo ng consistent header/footer, pwede mo pa rin i-enable yung layout at ilagay yung content sa loob ng sections
-    ViewData["Title"] = "Teacher's Sanctuary";
+    Layout = null;
+    ViewData["Title"] = "Teacher's Dashboard";
 }
 
 <!DOCTYPE html>
@@ -11,9 +14,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
     <style>
         :root {
             --gold-bg: #d4af37;
@@ -120,20 +121,20 @@
         </header>
 
         <div class="menu-grid">
-            @* eto yung pag route sa  TeacherController papunta sa StudentProgress Action *@
             <a asp-controller="Teacher" asp-action="StudentProgress" class="card-link">
                 <div class="card gold">
                     <div class="icon-circle">
-                        <img src="~/images/progress-icon.png" alt="Progress" width="40">
+                        <img src="~/images/ICONpreview.png" alt="Progress" width="40">
                     </div>
                     <p>VIEW CLASS PROGRESS</p>
                 </div>
             </a>
 
-            <a asp-controller="Teacher" asp-action="Index" class="card-link">
+            @* BINAGO: Login/Logout na para ma-clear ang session bago bumalik sa login page *@
+            <a asp-controller="Login" asp-action="Logout" class="card-link">
                 <div class="card blue">
                     <div class="icon-circle">
-                        <img src="~/images/logout-icon.png" alt="Log Out" width="40">
+                        <img src="~/images/ICONlogout.png" alt="Log Out" width="40">
                     </div>
                     <p>LOG OUT</p>
                 </div>

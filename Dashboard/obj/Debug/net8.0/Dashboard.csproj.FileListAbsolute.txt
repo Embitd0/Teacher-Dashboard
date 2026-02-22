@@ -66,3 +66,22 @@ C:\Users\ejull\source\repos\Embitd0\Teacher-Dashboard\Dashboard\obj\Debug\net8.0
 C:\Users\ejull\source\repos\Embitd0\Teacher-Dashboard\Dashboard\obj\Debug\net8.0\Dashboard.pdb
 C:\Users\ejull\source\repos\Embitd0\Teacher-Dashboard\Dashboard\obj\Debug\net8.0\Dashboard.genruntimeconfig.cache
 C:\Users\ejull\source\repos\Embitd0\Teacher-Dashboard\Dashboard\obj\Debug\net8.0\ref\Dashboard.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\obj\Debug\net8.0\Dashboard.sourcelink.json
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\BCrypt.Net-Next.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\Microsoft.Extensions.Caching.Abstractions.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\MySqlConnector.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\obj\Debug\net8.0\Dashboard.csproj.AssemblyReference.cache
+D:\codes\dsaLab\SoftEng\Teacher Dashboard (WEB)\Dashboard\Dashboard\obj\Debug\net8.0\Dashboard.csproj.Up2Date

@@ -1,32 +1,73 @@
-using System.Diagnostics;
-using Dashboard.Models;
+// Controllers/LoginController.cs
+// Nag-query sa MySQL Teacher table para i-verify ang credentials.
+// Plain text password comparison muna — walang BCrypt needed.
+
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Dashboard.Data;
+using Dashboard.Models;
 
 namespace Dashboard.Controllers
 {
-    public class HomeController : Controller
+    public class LoginController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        // Ini-inject ng DI container ang AppDbContext —
+        // tinukoy ito sa Program.cs
+        private readonly AppDbContext _db;
 
-        public HomeController(ILogger<HomeController> logger)
+        public LoginController(AppDbContext db)
         {
-            _logger = logger;
+            _db = db;
         }
 
-        public IActionResult MainMenu()
+        // GET /Login — ipakita ang login form
+        [HttpGet]
+        public IActionResult Index()
         {
-            return View();
+            // Kung naka-login na, i-redirect agad sa dashboard
+            if (HttpContext.Session.GetString("LoggedInUser") != null)
+                return RedirectToAction("Home", "Teacher");
+
+            return View(new LoginViewModel());
         }
 
-        public IActionResult Privacy()
+        // POST /Login — i-verify ang credentials laban sa DB
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(LoginViewModel model)
         {
-            return View();
+            // Suriin ang Required validation bago mag-query sa DB
+            if (!ModelState.IsValid)
+                return View(model);
+
+            // Hanapin ang teacher sa DB na may matching username
+            var teacher = await _db.Teachers
+                .FirstOrDefaultAsync(t => t.Username == model.Username);
+
+            // I-compare ang password directly (plain text muna)
+            // TODO: palitan ito ng BCrypt.Verify() kapag may hashing na
+            bool isValid = teacher != null
+            && BCrypt.Net.BCrypt.Verify(model.Password, teacher.Password);
+
+            if (!isValid)
+            {
+                // Hindi sinasabi kung username o password ang mali —
+                // para hindi malaman ng attacker kung may existing account
+                ModelState.AddModelError("", "INVALID USERNAME OR PASSWORD.");
+                return View(model);
+            }
+
+            // I-save ang username sa session
+            HttpContext.Session.SetString("LoggedInUser", teacher.Username);
+
+            return RedirectToAction("Home", "Teacher");
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        // GET /Login/Logout — burahin ang session at bumalik sa login
+        public IActionResult Logout()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Login");
         }
     }
 }
