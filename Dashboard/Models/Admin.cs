@@ -3,23 +3,23 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Dashboard.Models
 {
-    [Table("Teacher")]
-    public class Teacher
+    [Table("Admin")]
+    public class Admin
     {
         [Key]
-        [Column("teacher_id")]
+        [Column("admin_id")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int TeacherId { get; set; }
+        public int AdminId { get; set; }
 
         [Column("username")]
         [Required]
         [MaxLength(50)]
         public string Username { get; set; } = string.Empty;
 
-        [Column("name")]
+        [Column("full_name")]
         [Required]
         [MaxLength(100)]
-        public string Name { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
 
         [Column("password")]
         [Required]

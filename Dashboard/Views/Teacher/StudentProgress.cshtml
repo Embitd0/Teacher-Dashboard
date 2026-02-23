@@ -1,6 +1,8 @@
-﻿@model TeacherModel
+﻿@* Views/Teacher/StudentProgress.cshtml *@
+@model Dashboard.Models.TeacherModel
+
 @{
-    Layout = null; // Keeping the custom game UI look
+    Layout = null;
     ViewData["Title"] = "Student Progress";
 }
 
@@ -21,20 +23,27 @@
             --text-cyan: #5ce1e6;
         }
 
-        body {
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        body {
             font-family: 'Press Start 2P', cursive;
             background-color: #05161d;
             color: white;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-y: auto; /* allow page scroll only if screen is too short */
         }
 
+        /* ── Header ─────────────────────────────────────────────────── */
         .header-container {
-            margin-top: 40px;
+            flex-shrink: 0; /* hindi mag-s-shrink kahit maliit ang screen */
+            margin-top: 30px;
             border: 6px solid var(--gold-border);
             background-color: rgba(10, 25, 41, 0.9);
             padding: 15px 50px;
@@ -44,48 +53,102 @@
 
             .header-container h1 {
                 color: var(--text-cyan);
-                font-size: 24px;
+                font-size: 22px;
                 margin: 0;
                 text-shadow: 2px 2px #000;
             }
 
+        /* ── Content box ─────────────────────────────────────────────── */
         .content-box {
-            margin-top: 30px;
+            flex-shrink: 0;
+            margin-top: 25px;
+            margin-bottom: 80px; /* space para sa logout button */
             width: 85%;
             max-width: 900px;
             background-color: var(--table-overlay);
             border: 3px solid var(--gold-primary);
             border-radius: 15px;
-            padding: 30px;
-            box-sizing: border-box;
-            position: relative;
+            padding: 25px 30px;
+            /* No fixed height — the box grows/shrinks with the table content.
+                       The table-wrapper's max-height controls when scrolling kicks in. */
+            display: flex;
+            flex-direction: column;
         }
 
             .content-box h2 {
+                flex-shrink: 0; /* laging visible, hindi natatakpan ng scroll */
                 text-align: center;
-                font-size: 16px;
-                margin-bottom: 30px;
+                font-size: 14px;
+                margin-bottom: 20px;
                 letter-spacing: 2px;
             }
 
+        /* ── Scrollable table wrapper ────────────────────────────────── */
+        .table-wrapper {
+            overflow-x: auto;
+            /* max-height — kung lumagpas ang rows dito, mag-a-appear ang scrollbar.
+                       Calculated as: 1 row = ~44px + 55px thead = ~6 rows before scroll kicks in.
+                       Adjust max-height kung gusto mong mas marami o mas kaunti bago mag-scroll. */
+            max-height: 320px;
+            /* overflow-y: auto — scrollbar appears ONLY when content exceeds max-height,
+                       wala itong scrollbar kung kakaunti lang ang rows */
+            overflow-y: auto;
+            /* Custom scrollbar styling para match ang dark theme */
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold-primary) rgba(255,255,255,0.05);
+        }
+
+            /* Webkit scrollbar (Chrome, Edge) */
+            .table-wrapper::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
+            }
+
+            .table-wrapper::-webkit-scrollbar-track {
+                background: rgba(255,255,255,0.05);
+                border-radius: 10px;
+            }
+
+            .table-wrapper::-webkit-scrollbar-thumb {
+                background: var(--gold-primary);
+                border-radius: 10px;
+            }
+
+        /* ── Table styles ────────────────────────────────────────────── */
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 12px;
+            font-size: 11px;
+        }
+
+        thead {
+            /* Sticky header — nananatili sa taas kahit mag-scroll pababa */
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background-color: rgba(10, 25, 41, 0.98); /* opaque para hindi ma-overlap ng rows */
         }
 
         th {
             text-align: left;
-            padding-bottom: 15px;
-            color: white;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 15px 10px; /* equal padding top and bottom — centered na ang text */
+            color: var(--gold-border);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            white-space: nowrap;
         }
 
         td {
-            padding: 15px 0;
+            padding: 13px 10px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
         }
 
+        /* Subtle hover highlight on rows */
+        tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.04);
+        }
+
+        /* ── View button (placeholder — wires up later) ──────────────── */
         .view-btn {
             background: none;
             border: none;
@@ -93,7 +156,7 @@
             text-decoration: underline;
             cursor: pointer;
             font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
+            font-size: 9px;
             padding: 5px;
         }
 
@@ -101,11 +164,12 @@
                 color: var(--gold-border);
             }
 
+        /* ── Back / Logout button ────────────────────────────────────── */
         .logout-btn {
             position: fixed;
-            bottom: 30px;
-            right: 40px;
-            background-color: #2a5a70;
+            bottom: 25px;
+            right: 35px;
+            background-color: var(--bg-dark-blue);
             border: 3px solid var(--gold-border);
             color: white;
             padding: 10px 15px;
@@ -114,42 +178,67 @@
             border-radius: 8px;
             cursor: pointer;
             text-decoration: none;
+            transition: 0.2s;
         }
+
+            .logout-btn:hover {
+                background-color: #3a7a98;
+                transform: scale(1.03);
+            }
     </style>
 </head>
 <body>
 
     <div class="header-container">
-        <h1>TEACHER'S SANCTUARY</h1>
+        <h1>TEACHER'S DASHBOARD</h1>
     </div>
 
     <div class="content-box">
         <h2>STUDENT PROGRESS</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>NAME</th>
-                    <th>COMPL. TASKS</th>
-                    <th>ONG. TASKS</th>
-                    <th>LEVEL</th>
-                    <th>ACTION</th>
-                </tr>
-            </thead>
-            <tbody id="student-table-body">
-            </tbody>
-        </table>
+
+        @*
+            .table-wrapper — ito ang scrollable container.
+            Ang <thead> ay sticky sa loob nito para palaging
+            visible ang column headers kahit mag-scroll pababa.
+        *@
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>NAME</th>
+                        <th>COMPL. TASKS</th>
+                        <th>ONG. TASKS</th>
+                        <th>LEVEL</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody id="student-table-body">
+                    @* Rows are populated by the JS below.
+                       Palitan ng server-side Razor loop kapag
+                       naka-connect na ang DB. *@
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <a asp-controller="Teacher" asp-action="Index" class="logout-btn">LOG OUT</a>
+    @* Back to home — hindi logout, para makabalik sa main menu *@
+    <a asp-controller="Teacher" asp-action="Home" class="logout-btn">&#9664; BACK</a>
 
     <script>
-        // example data na gagawin ng backend. PALITAN NIYO TOH
+        // Hardcoded sample data — palitan ito ng actual DB values later
         const students = [
-            { id: 101, name: "RIZAL, J.", completed: 2, ongoing: 2, level: 1 },
-            { id: 102, name: "BONIFACIO, A.", completed: 1, ongoing: 2, level: 1 },
-            { id: 103, name: "TALIS, J.", completed: 4, ongoing: 1, level: 3 },
-            { id: 104, name: "MARS, B.", completed: 1, ongoing: 1, level: 1 },
-            { id: 105, name: "BARNEY, B.", completed: 0, ongoing: 2, level: 1 }
+            { id: 101, name: "RIZAL, J.",      completed: 2, ongoing: 2, level: 1 },
+            { id: 102, name: "BONIFACIO, A.",  completed: 1, ongoing: 2, level: 1 },
+            { id: 103, name: "TALIS, J.",      completed: 4, ongoing: 1, level: 3 },
+            { id: 104, name: "MARS, B.",       completed: 1, ongoing: 1, level: 1 },
+            { id: 105, name: "BARNEY, B.",     completed: 0, ongoing: 2, level: 1 },
+            { id: 106, name: "LUNA, A.",       completed: 3, ongoing: 0, level: 2 },
+            { id: 107, name: "DEL PILAR, M.",  completed: 2, ongoing: 3, level: 2 },
+            { id: 108, name: "MABINI, A.",     completed: 5, ongoing: 0, level: 4 },
+            { id: 109, name: "AGUINALDO, E.",  completed: 1, ongoing: 2, level: 1 },
+            { id: 110, name: "SILANG, D.",     completed: 3, ongoing: 1, level: 2 },
+            { id: 111, name: "LAPU-LAPU",      completed: 6, ongoing: 0, level: 5 },
+            { id: 112, name: "TANDANG SORA",   completed: 0, ongoing: 1, level: 1 },
         ];
 
         function renderTable(data) {
@@ -178,5 +267,6 @@
 
         renderTable(students);
     </script>
+
 </body>
 </html>
