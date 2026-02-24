@@ -1,0 +1,148 @@
+﻿@* Views/Admin/ActiveStudents.cshtml *@
+@* FRONTEND ONLY — Students active accounts, default view of Active Accounts *@
+@{
+    Layout = null;
+    ViewData["Title"] = "Admin - Active Accounts";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+    <div class="container py-4">
+
+        @* ── Header ───────────────────────────────────────────────────── *@
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <a href="/Admin/Index" class="text-decoration-none text-muted small">← Main Menu</a>
+                <h4 class="mb-0 mt-1">Active Accounts</h4>
+            </div>
+            <a href="/Login/Logout" class="btn btn-outline-danger btn-sm">Log Out</a>
+        </div>
+
+        @* ── Students / Teachers tab buttons ─────────────────────────── *@
+        <div class="mb-3">
+            <a href="/Admin/ActiveAccounts"
+               class="btn btn-primary me-2">
+                Students
+            </a>
+            <a href="/Admin/ActiveTeachers"
+               class="btn btn-outline-secondary">
+                Teachers
+            </a>
+        </div>
+
+        @* ── Filter by assigned teacher dropdown ─────────────────────── *@
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <label class="fw-semibold mb-0 text-nowrap">Filter by Teacher:</label>
+            <select id="teacherFilter" class="form-select form-select-sm w-auto"
+                    onchange="filterByTeacher(this.value)">
+                <option value="all">All Teachers</option>
+                @* Options will be populated from DB later — hardcoded for now *@
+                <option value="1">Maria Santos</option>
+                <option value="2">Pedro Reyes</option>
+                <option value="3">Ana Gomez</option>
+            </select>
+        </div>
+
+        @* ── Students table ───────────────────────────────────────────── *@
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <table class="table table-hover table-bordered mb-0 align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Assigned Teacher</th>
+                            <th>Capability Level</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        @* Hardcoded rows — replace with @foreach from DB later *@
+                        @* data-teacher-id used by JS filter *@
+                        <tr data-teacher-id="1">
+                            <td>1001</td>
+                            <td>Jose Rizal</td>
+                            <td>student01</td>
+                            <td>Maria Santos</td>
+                            <td>Moderate</td>
+                            <td class="text-center">
+                                <a href="/Admin/EditStudent/1001" class="btn btn-warning btn-sm me-1">Edit</a>
+                                <a href="/Admin/ConfirmDeactivate?type=student&id=1001" class="btn btn-outline-danger btn-sm">Deactivate</a>
+                            </td>
+                        </tr>
+                        <tr data-teacher-id="1">
+                            <td>1002</td>
+                            <td>Gabriela Silang</td>
+                            <td>student02</td>
+                            <td>Maria Santos</td>
+                            <td>Basic</td>
+                            <td class="text-center">
+                                <a href="/Admin/EditStudent/1002" class="btn btn-warning btn-sm me-1">Edit</a>
+                                <a href="/Admin/ConfirmDeactivate?type=student&id=1002" class="btn btn-outline-danger btn-sm">Deactivate</a>
+                            </td>
+                        </tr>
+                        <tr data-teacher-id="2">
+                            <td>1003</td>
+                            <td>Andres Bonifacio</td>
+                            <td>student03</td>
+                            <td>Pedro Reyes</td>
+                            <td>Advanced</td>
+                            <td class="text-center">
+                                <a href="/Admin/EditStudent/1003" class="btn btn-warning btn-sm me-1">Edit</a>
+                                <a href="/Admin/ConfirmDeactivate?type=student&id=1003" class="btn btn-outline-danger btn-sm">Deactivate</a>
+                            </td>
+                        </tr>
+                        <tr data-teacher-id="2">
+                            <td>1004</td>
+                            <td>Emilio Aguinaldo</td>
+                            <td>student04</td>
+                            <td>Pedro Reyes</td>
+                            <td>Moderate</td>
+                            <td class="text-center">
+                                <a href="/Admin/EditStudent/1004" class="btn btn-warning btn-sm me-1">Edit</a>
+                                <a href="/Admin/ConfirmDeactivate?type=student&id=1004" class="btn btn-outline-danger btn-sm">Deactivate</a>
+                            </td>
+                        </tr>
+                        <tr data-teacher-id="3">
+                            <td>1005</td>
+                            <td>Apolinario Mabini</td>
+                            <td>student05</td>
+                            <td>Ana Gomez</td>
+                            <td>Basic</td>
+                            <td class="text-center">
+                                <a href="/Admin/EditStudent/1005" class="btn btn-warning btn-sm me-1">Edit</a>
+                                <a href="/Admin/ConfirmDeactivate?type=student&id=1005" class="btn btn-outline-danger btn-sm">Deactivate</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Filter table rows by selected teacher
+        // When backend is wired, this can be replaced with a server-side query
+        function filterByTeacher(teacherId) {
+            const rows = document.querySelectorAll('#studentTableBody tr');
+            rows.forEach(row => {
+                if (teacherId === 'all' || row.dataset.teacherId === teacherId) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
