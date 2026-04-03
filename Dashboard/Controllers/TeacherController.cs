@@ -30,13 +30,11 @@ namespace Dashboard.Controllers
         {
             if (!IsLoggedIn())
                 return RedirectToAction("Index", "Login");
-
             var students = await _db.Students.ToListAsync();
             return View(students);
         }
 
         // GET /Teacher/ViewStudent/{lrn}
-        // lrn is a string (VARCHAR in DB)
         public async Task<IActionResult> ViewStudent(string id)
         {
             if (!IsLoggedIn())
@@ -46,6 +44,18 @@ namespace Dashboard.Controllers
             if (student == null)
                 return RedirectToAction("StudentProgress");
 
+            var scores = await _db.PuzzleQuestScores
+                .Where(s => s.Lrn == id)
+                .OrderByDescending(s => s.DateCompleted)
+                .ToListAsync();
+
+            var badges = await _db.StudentBadges
+                .Where(b => b.Lrn == id)
+                .Include(b => b.Badge)
+                .ToListAsync();
+
+            ViewBag.Scores = scores;
+            ViewBag.Badges = badges;
             return View(student);
         }
     }

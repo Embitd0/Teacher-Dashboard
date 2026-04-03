@@ -1,9 +1,11 @@
-﻿@* Views/Teacher/ViewStudent.cshtml *@
-@model Dashboard.Models.Student
+﻿@model Dashboard.Models.Student
+@using Dashboard.Models
 
 @{
     Layout = null;
     ViewData["Title"] = "Student Profile";
+    var scores = ViewBag.Scores as List<PuzzleQuestScore>;
+    var badges = ViewBag.Badges as List<StudentBadge>;
 }
 
 <!DOCTYPE html>
@@ -92,6 +94,133 @@
             padding: 20px 0;
         }
 
+        /* Scores */
+        .scores-wrapper {
+            overflow-x: auto;
+            max-height: 200px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold-border) rgba(255,255,255,0.05);
+        }
+
+            .scores-wrapper::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
+            }
+
+            .scores-wrapper::-webkit-scrollbar-track {
+                background: rgba(255,255,255,0.05);
+                border-radius: 10px;
+            }
+
+            .scores-wrapper::-webkit-scrollbar-thumb {
+                background: var(--gold-border);
+                border-radius: 10px;
+            }
+
+        .scores-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8px;
+        }
+
+            .scores-table th {
+                padding: 8px 6px;
+                color: var(--gold-border);
+                text-align: left;
+                border-bottom: 2px solid rgba(255,255,255,0.2);
+                white-space: nowrap;
+            }
+
+            .scores-table td {
+                padding: 8px 6px;
+                border-bottom: 1px solid rgba(255,255,255,0.08);
+                white-space: nowrap;
+            }
+
+            .scores-table tbody tr:hover {
+                background-color: rgba(255,255,255,0.04);
+            }
+
+            .scores-table .quest-id {
+                color: var(--text-cyan);
+            }
+
+        /* Badges */
+        .badges-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            max-height: 200px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold-border) rgba(255,255,255,0.05);
+        }
+
+            .badges-wrapper::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .badges-wrapper::-webkit-scrollbar-track {
+                background: rgba(255,255,255,0.05);
+                border-radius: 10px;
+            }
+
+            .badges-wrapper::-webkit-scrollbar-thumb {
+                background: var(--gold-border);
+                border-radius: 10px;
+            }
+
+        .badge-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            width: 70px;
+            position: relative;
+            cursor: pointer;
+        }
+
+            .badge-item img {
+                width: 32px;
+                height: 32px;
+                image-rendering: pixelated;
+            }
+
+            .badge-item span {
+                font-size: 7px;
+                text-align: center;
+                color: var(--gold-border);
+                word-break: break-word;
+            }
+
+        /* Tooltip for date earned */
+        .badge-tooltip {
+            visibility: hidden;
+            opacity: 0;
+            background-color: rgba(10, 25, 41, 0.95);
+            border: 2px solid var(--gold-border);
+            color: var(--text-white);
+            font-size: 7px;
+            text-align: center;
+            padding: 6px 8px;
+            border-radius: 6px;
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            transition: opacity 0.2s;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .badge-item:hover .badge-tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Footer */
         .footer-nav {
             width: 95%;
             max-width: 1100px;
@@ -147,17 +276,64 @@
 
             <div class="panel">
                 <div class="panel-title">CURRENT ONGOING TASKS</div>
-                <div class="empty-state">TASK DATA NOT YET CONNECTED.</div>
+                <div class="empty-state">NOT YET STARTED.</div>
             </div>
 
             <div class="panel">
                 <div class="panel-title">REWARDS AND BADGES</div>
-                <div class="empty-state">BADGE DATA NOT YET CONNECTED.</div>
+
+                @if (badges != null && badges.Any())
+                {
+                    <div class="badges-wrapper">
+                        @foreach (var b in badges)
+                        {
+                            <div class="badge-item">
+                                <div class="badge-tooltip">EARNED: @b.DateEarned.ToString("MM/dd/yyyy")</div>
+                                <img src="~/favicon.ico" alt="badge" />
+                                <span>@(b.Badge?.Name ?? "UNKNOWN")</span>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">NO BADGES EARNED YET.</div>
+                }
             </div>
 
             <div class="panel">
                 <div class="panel-title">COMPLETED TASKS</div>
-                <div class="empty-state">TASK DATA NOT YET CONNECTED.</div>
+
+                @if (scores != null && scores.Any())
+                {
+                    <div class="scores-wrapper">
+                        <table class="scores-table">
+                            <thead>
+                                <tr>
+                                    <th>QUEST</th>
+                                    <th>SCORE</th>
+                                    <th>TIME</th>
+                                    <th>COMPLETED</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var s in scores)
+                                {
+                                    <tr>
+                                        <td class="quest-id">QUEST @s.QuestId</td>
+                                        <td>@s.Score</td>
+                                        <td>@s.TimeOnTaskSec s</td>
+                                        <td>@s.DateCompleted.ToString("MM/dd/yyyy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="empty-state">NO COMPLETED TASKS YET.</div>
+                }
             </div>
 
         </div>

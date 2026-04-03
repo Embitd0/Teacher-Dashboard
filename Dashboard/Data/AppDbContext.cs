@@ -10,5 +10,8 @@ namespace Dashboard.Data
         public DbSet<Admin> Admins { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Student> Students { get; set; }
+        public DbSet<PuzzleQuestScore> PuzzleQuestScores { get; set; }
+        public DbSet<Badge> Badges { get; set; }
+        public DbSet<StudentBadge> StudentBadges { get; set; }
     }
-} 
+}
