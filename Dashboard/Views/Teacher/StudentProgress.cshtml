@@ -1,5 +1,5 @@
 ﻿@* Views/Teacher/StudentProgress.cshtml *@
-@model Dashboard.Models.TeacherModel
+@model IEnumerable<Dashboard.Models.Student>
 
 @{
     Layout = null;
@@ -37,18 +37,17 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-y: auto; /* allow page scroll only if screen is too short */
+            overflow-y: auto;
         }
 
-        /* ── Header ─────────────────────────────────────────────────── */
         .header-container {
-            flex-shrink: 0; /* hindi mag-s-shrink kahit maliit ang screen */
+            flex-shrink: 0;
             margin-top: 30px;
             border: 6px solid var(--gold-border);
             background-color: rgba(10, 25, 41, 0.9);
             padding: 15px 50px;
             border-radius: 40px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
 
             .header-container h1 {
@@ -58,47 +57,36 @@
                 text-shadow: 2px 2px #000;
             }
 
-        /* ── Content box ─────────────────────────────────────────────── */
         .content-box {
             flex-shrink: 0;
             margin-top: 25px;
-            margin-bottom: 80px; /* space para sa logout button */
+            margin-bottom: 80px;
             width: 85%;
             max-width: 900px;
             background-color: var(--table-overlay);
             border: 3px solid var(--gold-primary);
             border-radius: 15px;
             padding: 25px 30px;
-            /* No fixed height — the box grows/shrinks with the table content.
-                       The table-wrapper's max-height controls when scrolling kicks in. */
             display: flex;
             flex-direction: column;
         }
 
             .content-box h2 {
-                flex-shrink: 0; /* laging visible, hindi natatakpan ng scroll */
+                flex-shrink: 0;
                 text-align: center;
                 font-size: 14px;
                 margin-bottom: 20px;
                 letter-spacing: 2px;
             }
 
-        /* ── Scrollable table wrapper ────────────────────────────────── */
         .table-wrapper {
             overflow-x: auto;
-            /* max-height — kung lumagpas ang rows dito, mag-a-appear ang scrollbar.
-                       Calculated as: 1 row = ~44px + 55px thead = ~6 rows before scroll kicks in.
-                       Adjust max-height kung gusto mong mas marami o mas kaunti bago mag-scroll. */
             max-height: 320px;
-            /* overflow-y: auto — scrollbar appears ONLY when content exceeds max-height,
-                       wala itong scrollbar kung kakaunti lang ang rows */
             overflow-y: auto;
-            /* Custom scrollbar styling para match ang dark theme */
             scrollbar-width: thin;
             scrollbar-color: var(--gold-primary) rgba(255,255,255,0.05);
         }
 
-            /* Webkit scrollbar (Chrome, Edge) */
             .table-wrapper::-webkit-scrollbar {
                 width: 6px;
                 height: 6px;
@@ -114,7 +102,6 @@
                 border-radius: 10px;
             }
 
-        /* ── Table styles ────────────────────────────────────────────── */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -122,33 +109,30 @@
         }
 
         thead {
-            /* Sticky header — nananatili sa taas kahit mag-scroll pababa */
             position: sticky;
             top: 0;
             z-index: 1;
-            background-color: rgba(10, 25, 41, 0.98); /* opaque para hindi ma-overlap ng rows */
+            background-color: rgba(10, 25, 41, 0.98);
         }
 
         th {
             text-align: left;
-            padding: 15px 10px; /* equal padding top and bottom — centered na ang text */
+            padding: 15px 10px;
             color: var(--gold-border);
-            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            border-bottom: 2px solid rgba(255,255,255,0.3);
             white-space: nowrap;
         }
 
         td {
             padding: 13px 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             white-space: nowrap;
         }
 
-        /* Subtle hover highlight on rows */
         tbody tr:hover {
-            background-color: rgba(255, 255, 255, 0.04);
+            background-color: rgba(255,255,255,0.04);
         }
 
-        /* ── View button (placeholder — wires up later) ──────────────── */
         .view-btn {
             background: none;
             border: none;
@@ -164,7 +148,13 @@
                 color: var(--gold-border);
             }
 
-        /* ── Back / Logout button ────────────────────────────────────── */
+        .empty-state {
+            text-align: center;
+            color: rgba(255,255,255,0.4);
+            font-size: 10px;
+            padding: 30px 0;
+        }
+
         .logout-btn {
             position: fixed;
             bottom: 25px;
@@ -196,77 +186,47 @@
     <div class="content-box">
         <h2>STUDENT PROGRESS</h2>
 
-        @*
-            .table-wrapper — ito ang scrollable container.
-            Ang <thead> ay sticky sa loob nito para palaging
-            visible ang column headers kahit mag-scroll pababa.
-        *@
         <div class="table-wrapper">
             <table>
                 <thead>
                     <tr>
                         <th>NAME</th>
-                        <th>COMPL. TASKS</th>
-                        <th>ONG. TASKS</th>
-                        <th>LEVEL</th>
+                        <th>USERNAME</th>
+                        <th>CAPABILITY LEVEL</th>
                         <th>ACTION</th>
                     </tr>
                 </thead>
-                <tbody id="student-table-body">
-                    @* Rows are populated by the JS below.
-                       Palitan ng server-side Razor loop kapag
-                       naka-connect na ang DB. *@
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var student in Model)
+                        {
+                            <tr>
+                                <td>@student.Name</td>
+                                <td>@student.Username</td>
+                                <td>@student.CapabilityLevel</td>
+                                <td>
+                                    @* lrn is used as the route id since it's the PK *@
+                                    <a asp-controller="Teacher"
+                                       asp-action="ViewStudent"
+                                       asp-route-id="@student.Lrn"
+                                       class="view-btn">VIEW</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="empty-state">NO STUDENTS FOUND.</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
     </div>
 
-    @* Back to home — hindi logout, para makabalik sa main menu *@
     <a asp-controller="Teacher" asp-action="Home" class="logout-btn">&#9664; BACK</a>
-
-    <script>
-        // Hardcoded sample data — palitan ito ng actual DB values later
-        const students = [
-            { id: 101, name: "RIZAL, J.",      completed: 2, ongoing: 2, level: 1 },
-            { id: 102, name: "BONIFACIO, A.",  completed: 1, ongoing: 2, level: 1 },
-            { id: 103, name: "TALIS, J.",      completed: 4, ongoing: 1, level: 3 },
-            { id: 104, name: "MARS, B.",       completed: 1, ongoing: 1, level: 1 },
-            { id: 105, name: "BARNEY, B.",     completed: 0, ongoing: 2, level: 1 },
-            { id: 106, name: "LUNA, A.",       completed: 3, ongoing: 0, level: 2 },
-            { id: 107, name: "DEL PILAR, M.",  completed: 2, ongoing: 3, level: 2 },
-            { id: 108, name: "MABINI, A.",     completed: 5, ongoing: 0, level: 4 },
-            { id: 109, name: "AGUINALDO, E.",  completed: 1, ongoing: 2, level: 1 },
-            { id: 110, name: "SILANG, D.",     completed: 3, ongoing: 1, level: 2 },
-            { id: 111, name: "LAPU-LAPU",      completed: 6, ongoing: 0, level: 5 },
-            { id: 112, name: "TANDANG SORA",   completed: 0, ongoing: 1, level: 1 },
-        ];
-
-        function renderTable(data) {
-            const tableBody = document.getElementById('student-table-body');
-            tableBody.innerHTML = '';
-
-            data.forEach(student => {
-                const row = `
-                    <tr>
-                        <td>${student.name}</td>
-                        <td>${student.completed}</td>
-                        <td>${student.ongoing}</td>
-                        <td>${student.level}</td>
-                        <td>
-                            <button class="view-btn" onclick="viewStudent(${student.id})">VIEW</button>
-                        </td>
-                    </tr>
-                `;
-                tableBody.innerHTML += row;
-            });
-        }
-
-        function viewStudent(id) {
-            window.location.href = `/Teacher/ViewStudent?id=${id}`;
-        }
-
-        renderTable(students);
-    </script>
 
 </body>
 </html>

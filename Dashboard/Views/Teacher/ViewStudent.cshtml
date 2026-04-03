@@ -1,6 +1,8 @@
-﻿@model TeacherModel
+﻿@* Views/Teacher/ViewStudent.cshtml *@
+@model Dashboard.Models.Student
+
 @{
-    Layout = null; 
+    Layout = null;
     ViewData["Title"] = "Student Profile";
 }
 
@@ -61,7 +63,6 @@
             border: 3px solid var(--blue-outline);
             border-radius: 15px;
             padding: 20px;
-            position: relative;
         }
 
         .panel-title {
@@ -84,46 +85,11 @@
             color: var(--text-cyan);
         }
 
-        .task-item {
+        .empty-state {
             font-size: 9px;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .task-header {
-            display: flex;
-            justify-content: space-between;
-            color: #888;
-            font-size: 8px;
-            margin-bottom: 5px;
-        }
-
-        .retry-text {
-            color: #ff5555;
-            margin-top: 5px;
-        }
-
-        .badge-container {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .badge-slot {
-            width: 60px;
-            height: 60px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .badge-img {
-            width: 50px;
-            height: 50px;
+            color: rgba(255,255,255,0.4);
+            text-align: center;
+            padding: 20px 0;
         }
 
         .footer-nav {
@@ -153,114 +119,57 @@
             }
 
         @@media (max-width: 800px) {
-            .profile-grid
-
-        {
-            grid-template-columns: 1fr;
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
         }
-
-        }
-
     </style>
 </head>
 <body>
 
     <div class="header-container">
-        <h1 id="page-title">STUDENT PROFILE</h1>
+        <h1>STUDENT PROFILE</h1>
     </div>
 
-    <div class="profile-grid">
-        <div class="panel">
-            <div class="panel-title">CHARACTER INFORMATION</div>
-            <div class="info-row">STUDENT NAME: <span id="student-name" class="value">Loading...</span></div>
-            <div class="info-row">USERNAME: <span id="student-username" class="value">---</span></div>
-            <div class="info-row">LRN: <span id="student-lrn" class="value">---</span></div>
-            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.2); margin:15px 0;">
-            <div class="info-row">Current Level: <span id="student-level" style="float:right">0</span></div>
-            <div class="info-row">Total Completed Tasks: <span id="student-completed-count" style="float:right">0</span></div>
-        </div>
+    @if (Model != null)
+    {
+        <div class="profile-grid">
 
-        <div class="panel">
-            <div class="panel-title">CURRENT ONGOING TASKS</div>
-            <div id="ongoing-tasks-container"></div>
-        </div>
+            <div class="panel">
+                <div class="panel-title">CHARACTER INFORMATION</div>
+                <div class="info-row">STUDENT NAME: <span class="value">@Model.Name</span></div>
+                <div class="info-row">USERNAME: <span class="value">@Model.Username</span></div>
+                <div class="info-row">LRN: <span class="value">@Model.Lrn</span></div>
+                <hr style="border:0; border-top:1px solid rgba(255,255,255,0.2); margin:15px 0;">
+                <div class="info-row">CAPABILITY LEVEL: <span class="value">@Model.CapabilityLevel</span></div>
+                <div class="info-row">SENSORY PROFILE: <span class="value">@Model.SensoryProfileSetting</span></div>
+            </div>
 
-        <div class="panel">
-            <div class="panel-title">REWARDS AND BADGES</div>
-            <div id="badge-container" class="badge-container"></div>
-        </div>
+            <div class="panel">
+                <div class="panel-title">CURRENT ONGOING TASKS</div>
+                <div class="empty-state">TASK DATA NOT YET CONNECTED.</div>
+            </div>
 
-        <div class="panel">
-            <div class="panel-title">COMPLETED TASKS</div>
-            <div id="completed-tasks-container"></div>
+            <div class="panel">
+                <div class="panel-title">REWARDS AND BADGES</div>
+                <div class="empty-state">BADGE DATA NOT YET CONNECTED.</div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">COMPLETED TASKS</div>
+                <div class="empty-state">TASK DATA NOT YET CONNECTED.</div>
+            </div>
+
         </div>
-    </div>
+    }
+    else
+    {
+        <p style="font-size:12px; color:rgba(255,255,255,0.5);">STUDENT NOT FOUND.</p>
+    }
 
     <div class="footer-nav">
         <a asp-controller="Teacher" asp-action="StudentProgress" class="back-btn">BACK TO CLASS VIEW</a>
     </div>
 
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const studentId = params.get('id');
-
-        async function fetchStudentData(id) {
-                    // update niyo toh para sa backend data
-            const mockData = {
-                name: "Jose Rizal",
-                username: "rizalConqueror",
-                lrn: "1234567890",
-                level: 1,
-                completedCount: 2,
-                ongoing: [
-                    { title: "LEVEL 1 | TASK 3: COLLOIDS", attempt: "3rd", time: "15:29", progress: "54%", retries: 2 },
-                    { title: "LEVEL 1 | TASK 4: COLLOIDS PT. 2", attempt: "1st", time: "--:--", progress: "0%", retries: 3 }
-                ],
-                completed: [
-                    { title: "LEVEL 1 | TASK 1: SOLUTIONS", retries: 3 },
-                    { title: "LEVEL 1 | TASK 2: SUSPENSIONS", retries: 1 }
-                ],
-                badges: ["/images/badge1.png", "/images/badge2.png", "/images/badge3.png", "/images/badge4.png"]
-            };
-
-            updateUI(mockData);
-        }
-
-        function updateUI(data) {
-            document.getElementById('student-name').innerText = data.name;
-            document.getElementById('student-username').innerText = data.username;
-            document.getElementById('student-lrn').innerText = data.lrn;
-            document.getElementById('student-level').innerText = data.level;
-            document.getElementById('student-completed-count').innerText = data.completedCount;
-
-            const ongoingCont = document.getElementById('ongoing-tasks-container');
-            ongoingCont.innerHTML = data.ongoing.map(t => `
-                <div class="task-item">
-                    <div class="task-header"><span>${t.attempt} Attempt</span><span>${t.time}</span></div>
-                    <div>${t.title} <span style="float:right">${t.progress}</span></div>
-                    <div class="retry-text">NUM. OF RETRIES: ${t.retries}</div>
-                </div>
-            `).join('');
-
-            const completedCont = document.getElementById('completed-tasks-container');
-            completedCont.innerHTML = data.completed.map(t => `
-                <div class="task-item">
-                    <div>${t.title}</div>
-                    <div class="retry-text">NUM. OF RETRIES: ${t.retries}</div>
-                </div>
-            `).join('');
-
-            const badgeCont = document.getElementById('badge-container');
-            badgeCont.innerHTML = data.badges.map(b => `
-                <div class="badge-slot"><img src="${b}" class="badge-img" alt="Badge"></div>
-            `).join('');
-        }
-
-        if(studentId) {
-            fetchStudentData(studentId);
-        } else {
-            document.getElementById('student-name').innerText = "No Student Selected";
-        }
-    </script>
 </body>
 </html>

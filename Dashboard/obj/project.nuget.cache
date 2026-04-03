@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hVe0TkBofks=",
+  "dgSpecHash": "Y0NSQmAypNA=",
   "success": true,
-  "projectFilePath": "D:\\codes\\dsaLab\\SoftEng\\Teacher Dashboard (WEB)\\Dashboard\\Dashboard\\Dashboard.csproj",
+  "projectFilePath": "D:\\GitHub\\Teacher-Dashboard\\Dashboard\\Dashboard.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\bcrypt.net-next\\4.1.0\\bcrypt.net-next.4.1.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.entityframeworkcore\\9.0.0\\microsoft.entityframeworkcore.9.0.0.nupkg.sha512",

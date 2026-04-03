@@ -1,41 +1,52 @@
-﻿// Controllers/TeacherController.cs
-// Dinagdagan lang ng IsLoggedIn() check sa bawat action
-// para hindi ma-access ng hindi naka-login na user ang dashboard.
-
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Dashboard.Data;
+using Dashboard.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dashboard.Controllers
 {
     public class TeacherController : Controller
     {
-        // Sinisigurado na may aktibong session bago ipakita ang kahit anong page.
-        // Kapag nag-integrate ka na ng ASP.NET Core Identity,
-        // pwede mo palitan ito ng [Authorize] attribute.
+        private readonly AppDbContext _db;
+
+        public TeacherController(AppDbContext db)
+        {
+            _db = db;
+        }
+
         private bool IsLoggedIn() =>
             HttpContext.Session.GetString("LoggedInUser") != null;
 
+        // GET /Teacher/Home
         public IActionResult Home()
         {
             if (!IsLoggedIn())
                 return RedirectToAction("Index", "Login");
-
             return View();
         }
 
-        public IActionResult StudentProgress()
+        // GET /Teacher/StudentProgress
+        public async Task<IActionResult> StudentProgress()
         {
             if (!IsLoggedIn())
                 return RedirectToAction("Index", "Login");
 
-            return View();
+            var students = await _db.Students.ToListAsync();
+            return View(students);
         }
 
-        public IActionResult ViewStudent()
+        // GET /Teacher/ViewStudent/{lrn}
+        // lrn is a string (VARCHAR in DB)
+        public async Task<IActionResult> ViewStudent(string id)
         {
             if (!IsLoggedIn())
                 return RedirectToAction("Index", "Login");
 
-            return View();
+            var student = await _db.Students.FindAsync(id);
+            if (student == null)
+                return RedirectToAction("StudentProgress");
+
+            return View(student);
         }
     }
 }
